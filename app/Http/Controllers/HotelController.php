@@ -17,13 +17,17 @@ class HotelController extends Controller
         $hotels = Hotel::where('is_active', true)->get();
         return view('hotels.index', compact('hotels'));
     }
-
+ public function AdminIndex()
+    {
+        $hotels = Hotel::where('is_active', true)->get();
+        return view('admin.hotels.index', compact('hotels'));
+    }
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('hotels.create');
+        return view('admin.hotels.create');
     }
 
     /**
@@ -83,7 +87,7 @@ class HotelController extends Controller
             }
         }
 
-        return redirect()->route('hotels.index')->with('success', 'Hotel created successfully.');
+        return redirect()->route('admin.hotels.index')->with('success', 'Hotel created successfully.');
     }
 
     /**
@@ -99,7 +103,7 @@ class HotelController extends Controller
      */
     public function edit(Hotel $hotel)
     {
-        return view('hotels.edit', compact('hotel'));
+        return view('admin.hotels.edit', compact('hotel'));
     }
 
     /**
@@ -167,7 +171,7 @@ class HotelController extends Controller
             }
         }
 
-        return redirect()->route('hotels.index')->with('success', 'Hotel updated successfully.');
+        return redirect()->route('admin.hotels.index')->with('success', 'Hotel updated successfully.');
     }
 
     /**

@@ -12,7 +12,7 @@
                 <p class="text-gray-600">Comprehensive visa processing services for destinations worldwide</p>
             </div>
             <div class="flex items-center space-x-3">
-                <a href="{{ route('visas.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                <a href="{{ route('admin.visas.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
                     <i class="fas fa-plus mr-2"></i>
                     New Visa Service
                 </a>

@@ -1,236 +1,215 @@
-@extends('layouts.app')
+@extends('admin.layouts.app')
 
-@section('title', 'Partners - Royeli Tours & Travel')
+@section('title', 'Partners - Admin Dashboard')
+@section('page-title', 'Partners')
 
 @section('content')
-<div class="space-y-6">
-    <!-- Header -->
-    <div class="bg-white rounded-lg shadow-sm p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900">Partners</h1>
-                <p class="mt-2 text-gray-600">Manage your B2B travel partners and agents</p>
-            </div>
-            <div class="flex items-center space-x-3">
-                <a href="{{ route('partners.create') }}" class="btn-primary">
-                    <i class="fas fa-plus mr-2"></i>
-                    Add New Partner
-                </a>
-            </div>
+<!-- Header -->
+<div class="glass-card p-6 mb-8">
+    <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-200">Partners</h1>
+            <p class="text-gray-400 mt-1">Manage all B2B travel partners</p>
         </div>
-    </div>
-
-    <!-- Statistics -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div class="bg-white rounded-lg shadow-sm p-6">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-users text-white"></i>
-                    </div>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500">Total Partners</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['total'] }}</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-sm p-6">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-check text-white"></i>
-                    </div>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500">Active Partners</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['active'] }}</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-sm p-6">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-clock text-white"></i>
-                    </div>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500">Pending Approval</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['pending'] }}</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-sm p-6">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-ban text-white"></i>
-                    </div>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500">Suspended</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $stats['suspended'] }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Search and Filters -->
-    <div class="bg-white rounded-lg shadow-sm p-6">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-            <div class="flex-1 max-w-md">
-                <label for="search" class="sr-only">Search partners</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-gray-400"></i>
-                    </div>
-                    <input type="text" name="search" id="search" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500" placeholder="Search partners...">
-                </div>
-            </div>
-            <div class="flex items-center space-x-4">
-                <select class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="pending">Pending</option>
-                    <option value="suspended">Suspended</option>
-                    <option value="inactive">Inactive</option>
-                </select>
-                <select class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">All Types</option>
-                    <option value="travel_agent">Travel Agent</option>
-                    <option value="tour_operator">Tour Operator</option>
-                    <option value="corporate">Corporate</option>
-                    <option value="individual">Individual</option>
-                </select>
-            </div>
-        </div>
-    </div>
-
-    <!-- Partners List -->
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">All Partners</h3>
-        </div>
-        
-        @if($partners->count() > 0)
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Partner</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Business Type</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Balance</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Commission</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach($partners as $partner)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                                            <span class="text-blue-600 font-bold text-sm">{{ strtoupper(substr($partner->company_name, 0, 2)) }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900">{{ $partner->company_name }}</div>
-                                        <div class="text-sm text-gray-500">{{ $partner->contact_person }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $partner->email }}</div>
-                                <div class="text-sm text-gray-500">{{ $partner->phone }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                    {{ $partner->business_type_label }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $partner->status_badge_class }}">
-                                    {{ ucfirst($partner->status) }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $partner->formatted_current_balance }}
-                                <div class="text-xs text-gray-500">Limit: {{ $partner->formatted_credit_limit }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $partner->formatted_commission_rate }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex items-center space-x-2">
-                                    <a href="{{ route('partners.show', $partner) }}" class="text-blue-600 hover:text-blue-900">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{{ route('partners.edit', $partner) }}" class="text-indigo-600 hover:text-indigo-900">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a href="{{ route('partners.dashboard', $partner) }}" class="text-green-600 hover:text-green-900">
-                                        <i class="fas fa-chart-line"></i>
-                                    </a>
-                                    <form action="{{ route('partners.destroy', $partner) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this partner?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Pagination -->
-            <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-                {{ $partners->links() }}
-            </div>
-        @else
-            <div class="text-center py-12">
-                <i class="fas fa-users text-gray-400 text-4xl mb-4"></i>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">No partners found</h3>
-                <p class="text-gray-500 mb-6">Get started by adding your first B2B partner.</p>
-                <a href="{{ route('partners.create') }}" class="btn-primary">
-                    <i class="fas fa-plus mr-2"></i>
-                    Add New Partner
-                </a>
-            </div>
-        @endif
+        <a href="{{ route('admin.partners.create') }}" class="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg hover:shadow-lg transition">
+            <i class="fas fa-plus mr-2"></i>Add New Partner
+        </a>
     </div>
 </div>
 
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add search functionality
-        const searchInput = document.getElementById('search');
-        const tableRows = document.querySelectorAll('tbody tr');
-        
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            
-            tableRows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                if (text.includes(searchTerm)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-    });
-</script>
-@endpush
-@endsection 
+<!-- Statistics Cards -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="glass-card p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-400 text-sm">Total Partners</p>
+                <h3 class="text-2xl font-bold text-gray-200 mt-1">{{ \App\Models\Partner::count() }}</h3>
+            </div>
+            <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                <i class="fas fa-handshake text-purple-400 text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-400 text-sm">Travel Agents</p>
+                <h3 class="text-2xl font-bold text-green-400 mt-1">{{ \App\Models\Partner::where('business_type', 'travel_agent')->count() }}</h3>
+            </div>
+            <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                <i class="fas fa-suitcase text-green-400 text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-400 text-sm">Tour Operators</p>
+                <h3 class="text-2xl font-bold text-blue-400 mt-1">{{ \App\Models\Partner::where('business_type', 'tour_operator')->count() }}</h3>
+            </div>
+            <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                <i class="fas fa-bus text-blue-400 text-xl"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-card p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-gray-400 text-sm">Corporate</p>
+                <h3 class="text-2xl font-bold text-yellow-400 mt-1">{{ \App\Models\Partner::where('business_type', 'corporate')->count() }}</h3>
+            </div>
+            <div class="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                <i class="fas fa-building text-yellow-400 text-xl"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter and Search -->
+<div class="glass-card p-6 mb-6">
+    <form method="GET" action="{{ route('admin.partners.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Search</label>
+            <input 
+                type="text" 
+                name="search" 
+                value="{{ request('search') }}" 
+                placeholder="Company name or contact..." 
+                class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+            >
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Business Type</label>
+            <select 
+                name="type" 
+                class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+            >
+                <option value="">All Types</option>
+                <option value="travel_agent" {{ request('type') == 'travel_agent' ? 'selected' : '' }}>Travel Agent</option>
+                <option value="tour_operator" {{ request('type') == 'tour_operator' ? 'selected' : '' }}>Tour Operator</option>
+                <option value="corporate" {{ request('type') == 'corporate' ? 'selected' : '' }}>Corporate</option>
+                <option value="individual" {{ request('type') == 'individual' ? 'selected' : '' }}>Individual</option>
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-2">Payment Terms</label>
+            <select 
+                name="payment_terms" 
+                class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+            >
+                <option value="">All Terms</option>
+                <option value="immediate" {{ request('payment_terms') == 'immediate' ? 'selected' : '' }}>Immediate</option>
+                <option value="7_days" {{ request('payment_terms') == '7_days' ? 'selected' : '' }}>7 Days</option>
+                <option value="15_days" {{ request('payment_terms') == '15_days' ? 'selected' : '' }}>15 Days</option>
+                <option value="30_days" {{ request('payment_terms') == '30_days' ? 'selected' : '' }}>30 Days</option>
+            </select>
+        </div>
+
+        <div class="flex items-end gap-2">
+            <button type="submit" class="flex-1 px-4 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition">
+                <i class="fas fa-search mr-2"></i>Filter
+            </button>
+            <a href="{{ route('admin.partners.index') }}" class="px-4 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition">
+                <i class="fas fa-redo"></i>
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- Partners Table -->
+<div class="glass-card p-6">
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead>
+                <tr class="border-b border-gray-700">
+                    <th class="text-left py-3 px-4 text-gray-300 font-semibold">Company</th>
+                    <th class="text-left py-3 px-4 text-gray-300 font-semibold">Contact</th>
+                    <th class="text-left py-3 px-4 text-gray-300 font-semibold">Business Type</th>
+                    <th class="text-left py-3 px-4 text-gray-300 font-semibold">Commission</th>
+                    <th class="text-left py-3 px-4 text-gray-300 font-semibold">Credit Limit</th>
+                    <th class="text-left py-3 px-4 text-gray-300 font-semibold">Payment Terms</th>
+                    <th class="text-right py-3 px-4 text-gray-300 font-semibold">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $partners = \App\Models\Partner::latest()->paginate(15);
+                @endphp
+                @forelse($partners as $partner)
+                <tr class="border-b border-gray-700/50 hover:bg-white/5 transition">
+                    <td class="py-4 px-4">
+                        <div>
+                            <p class="text-gray-200 font-medium">{{ $partner->company_name }}</p>
+                            <p class="text-xs text-gray-400">{{ $partner->city }}, {{ $partner->country }}</p>
+                        </div>
+                    </td>
+                    <td class="py-4 px-4">
+                        <div class="text-gray-300">
+                            <p class="text-sm">{{ $partner->contact_person }}</p>
+                            <p class="text-xs text-gray-400">{{ $partner->email }}</p>
+                            <p class="text-xs text-gray-400">{{ $partner->phone }}</p>
+                        </div>
+                    </td>
+                    <td class="py-4 px-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-medium bg-purple-500/20 text-purple-400 capitalize">
+                            {{ str_replace('_', ' ', $partner->business_type) }}
+                        </span>
+                    </td>
+                    <td class="py-4 px-4">
+                        <span class="text-gray-200">{{ $partner->commission_rate }}%</span>
+                    </td>
+                    <td class="py-4 px-4">
+                        <span class="text-gray-200">₦{{ number_format($partner->credit_limit, 2) }}</span>
+                    </td>
+                    <td class="py-4 px-4">
+                        <span class="text-gray-300 capitalize text-sm">{{ str_replace('_', ' ', $partner->payment_terms) }}</span>
+                    </td>
+                    <td class="py-4 px-4">
+                        <div class="flex items-center justify-end gap-2">
+                            <a href="{{ route('admin.partners.show', $partner) }}" class="p-2 hover:bg-blue-500/20 rounded-lg transition text-blue-400" title="View">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ route('admin.partners.edit', $partner) }}" class="p-2 hover:bg-green-500/20 rounded-lg transition text-green-400" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form method="POST" action="{{ route('admin.partners.destroy', $partner) }}" class="inline" onsubmit="return confirm('Are you sure you want to delete this partner?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="p-2 hover:bg-red-500/20 rounded-lg transition text-red-400" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="7" class="py-12 text-center">
+                        <div class="text-gray-400">
+                            <i class="fas fa-handshake text-4xl mb-4 opacity-50"></i>
+                            <p class="text-lg">No partners found</p>
+                            <p class="text-sm mt-2">Add your first partner to get started</p>
+                            <a href="{{ route('admin.partners.create') }}" class="inline-block mt-4 px-6 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg hover:shadow-lg transition">
+                                <i class="fas fa-plus mr-2"></i>Add Partner
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Pagination -->
+    @if($partners->hasPages())
+    <div class="mt-6">
+        {{ $partners->links() }}
+    </div>
+    @endif
+</div>
+@endsection

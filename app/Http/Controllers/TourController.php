@@ -18,12 +18,19 @@ class TourController extends Controller
         return view('tours.index', compact('tours'));
     }
 
+     public function adminLink()
+    {
+        $tours = TourPackage::where('is_active', true)->get();
+        return view('admin.tours.index', compact('tours'));
+    }
+
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('tours.create');
+        return view('admin.tours.create');
     }
 
     /**
@@ -88,7 +95,7 @@ if ($request->hasFile('extra_images')) {
     }
 }
 
-        return redirect()->route('tours.index')->with('success', 'Tour package created successfully.');
+        return redirect()->route('admin.tours.index')->with('success', 'Tour package created successfully.');
     }
 
     /**
@@ -104,7 +111,7 @@ if ($request->hasFile('extra_images')) {
      */
     public function edit(TourPackage $tour)
     {
-        return view('tours.edit', compact('tour'));
+        return view('admin.tours.edit', compact('tour'));
     }
 
     /**
@@ -170,7 +177,7 @@ if ($request->hasFile('extra_images')) {
             }
         }
 
-        return redirect()->route('tours.index')->with('success', 'Tour package updated successfully.');
+        return redirect()->route('admin.tours.index')->with('success', 'Tour package updated successfully.');
     }
 
     /**

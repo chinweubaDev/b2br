@@ -22,7 +22,7 @@
                             <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
                             </svg>
-                            <a href="{{ route('visas.index') }}" class="ml-1 text-gray-700 hover:text-blue-600 md:ml-2">Visa Services</a>
+                            <a href="{{ route('admin.visas.index') }}" class="ml-1 text-gray-700 hover:text-blue-600 md:ml-2">Visa Services</a>
                         </div>
                     </li>
                     <li aria-current="page">
@@ -41,7 +41,7 @@
                     <h1 class="text-3xl font-bold text-gray-900">Create New Visa Service</h1>
                     <p class="mt-2 text-gray-600">Add a new visa service to the system</p>
                 </div>
-                <a href="{{ route('visas.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+                <a href="{{ route('admin.visas.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
                     <i class="fas fa-arrow-left mr-2"></i>
                     Back to Visa Services
                 </a>
@@ -51,7 +51,7 @@
         <!-- Form -->
         <div class="bg-white shadow rounded-lg">
             <div class="px-6 py-8">
-                <form method="POST" action="{{ route('visas.store') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('admin.visas.store') }}" enctype="multipart/form-data">
                     @csrf
                     
                     <div class="space-y-8">
@@ -184,7 +184,7 @@
 
                         <!-- Submit Buttons -->
                         <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-                            <a href="{{ route('visas.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg">
+                            <a href="{{ route('admin.visas.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg">
                                 Cancel
                             </a>
                             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">

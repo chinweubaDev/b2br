@@ -29,13 +29,27 @@ class PartnerController extends Controller
 
         return view('partners.index', compact('partners', 'stats'));
     }
+  public function adminIndex()
+    {
+        $partners = Partner::with(['bookings', 'transactions'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
 
+        $stats = [
+            'total' => Partner::count(),
+            'active' => Partner::where('status', 'active')->count(),
+            'pending' => Partner::where('status', 'pending')->count(),
+            'suspended' => Partner::where('status', 'suspended')->count(),
+        ];
+
+        return view('admin.partners.index', compact('partners', 'stats'));
+    }
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('partners.create');
+        return view('admin.partners.create');
     }
 
     /**
@@ -72,7 +86,7 @@ class PartnerController extends Controller
 
         Partner::create($validated);
 
-        return redirect()->route('partners.index')->with('success', 'Partner created successfully.');
+        return redirect()->route('admin.partners.index')->with('success', 'Partner created successfully.');
     }
 
     /**
@@ -107,7 +121,7 @@ class PartnerController extends Controller
      */
     public function edit(Partner $partner)
     {
-        return view('partners.edit', compact('partner'));
+        return view('admin.partners.edit', compact('partner'));
     }
 
     /**
@@ -157,7 +171,7 @@ class PartnerController extends Controller
     {
         $partner->delete();
 
-        return redirect()->route('partners.index')->with('success', 'Partner deleted successfully.');
+        return redirect()->route('admin.partners.index')->with('success', 'Partner deleted successfully.');
     }
 
     public function dashboard(Partner $partner)

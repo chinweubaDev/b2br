@@ -65,8 +65,8 @@
                 <i class="fas fa-chevron-down submenu-chevron" :class="{ 'rotated': visaOpen }"></i>
             </button>
             <ul class="sidebar-submenu" :class="{ 'open': visaOpen }" x-cloak>
-                <li><a href="{{ route('visas.index') }}" class="sidebar-submenu-link">All Visas</a></li>
-                <li><a href="{{ route('visas.create') }}" class="sidebar-submenu-link">Create Visa</a></li>
+                <li><a href="{{ route('admin.visas.index') }}" class="sidebar-submenu-link">All Visas</a></li>
+                <li><a href="{{ route('admin.visas.create') }}" class="sidebar-submenu-link">Create Visa</a></li>
             </ul>
         </li>
 
@@ -82,8 +82,8 @@
                 <i class="fas fa-chevron-down submenu-chevron" :class="{ 'rotated': tourOpen }"></i>
             </button>
             <ul class="sidebar-submenu" :class="{ 'open': tourOpen }" x-cloak>
-                <li><a href="{{ route('tours.index') }}" class="sidebar-submenu-link">All Tours</a></li>
-                <li><a href="{{ route('tours.create') }}" class="sidebar-submenu-link">Create Tour</a></li>
+                <li><a href="{{ route('admin.tours.index') }}" class="sidebar-submenu-link">All Tours</a></li>
+                <li><a href="{{ route('admin.tours.create') }}" class="sidebar-submenu-link">Create Tour</a></li>
             </ul>
         </li>
 
@@ -99,8 +99,8 @@
                 <i class="fas fa-chevron-down submenu-chevron" :class="{ 'rotated': hotelOpen }"></i>
             </button>
             <ul class="sidebar-submenu" :class="{ 'open': hotelOpen }" x-cloak>
-                <li><a href="{{ route('hotels.index') }}" class="sidebar-submenu-link">All Hotels</a></li>
-                <li><a href="{{ route('hotels.create') }}" class="sidebar-submenu-link">Create Hotel</a></li>
+                <li><a href="{{ route('admin.hotels.index') }}" class="sidebar-submenu-link">All Hotels</a></li>
+                <li><a href="{{ route('admin.hotels.create') }}" class="sidebar-submenu-link">Create Hotel</a></li>
             </ul>
         </li>
 
@@ -116,8 +116,8 @@
                 <i class="fas fa-chevron-down submenu-chevron" :class="{ 'rotated': cruiseOpen }"></i>
             </button>
             <ul class="sidebar-submenu" :class="{ 'open': cruiseOpen }" x-cloak>
-                <li><a href="{{ route('cruises.index') }}" class="sidebar-submenu-link">All Cruises</a></li>
-                <li><a href="{{ route('cruises.create') }}" class="sidebar-submenu-link">Create Cruise</a></li>
+                <li><a href="{{ route('admin.cruises.index') }}" class="sidebar-submenu-link">All Cruises</a></li>
+                <li><a href="{{ route('admin.cruises.create') }}" class="sidebar-submenu-link">Create Cruise</a></li>
             </ul>
         </li>
 
@@ -168,8 +168,8 @@
                 <i class="fas fa-chevron-down submenu-chevron" :class="{ 'rotated': docOpen }"></i>
             </button>
             <ul class="sidebar-submenu" :class="{ 'open': docOpen }" x-cloak>
-                <li><a href="{{ route('documentation.index') }}" class="sidebar-submenu-link">All Docs</a></li>
-                <li><a href="{{ route('documentation.create') }}" class="sidebar-submenu-link">Create Doc</a></li>
+                <li><a href="{{ route('admin.documentation.index') }}" class="sidebar-submenu-link">All Docs</a></li>
+                <li><a href="{{ route('admin.documentation.create') }}" class="sidebar-submenu-link">Create Doc</a></li>
             </ul>
         </li>
 

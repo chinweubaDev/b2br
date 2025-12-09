@@ -15,13 +15,17 @@ class DocumentationController extends Controller
         $services = DocumentationService::where('is_active', true)->get();
         return view('documentation.index', compact('services'));
     }
-
+ public function adminIndex()
+    {
+        $documentations = DocumentationService::where('is_active', true)->get();
+        return view('admin.documentation.index', compact('documentations'));
+    }
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('documentation.create');
+        return view('admin.documentation.create');
     }
 
     /**
@@ -42,7 +46,7 @@ class DocumentationController extends Controller
 
         DocumentationService::create($validated);
 
-        return redirect()->route('documentation.index')->with('success', 'Documentation service created successfully.');
+        return redirect()->route('admin.documentation.index')->with('success', 'Documentation service created successfully.');
     }
 
     /**
@@ -58,7 +62,7 @@ class DocumentationController extends Controller
      */
     public function edit(DocumentationService $documentation)
     {
-        return view('documentation.edit', compact('documentation'));
+        return view('admin.documentation.edit', compact('documentation'));
     }
 
     /**
@@ -79,7 +83,7 @@ class DocumentationController extends Controller
 
         $documentation->update($validated);
 
-        return redirect()->route('documentation.index')->with('success', 'Documentation service updated successfully.');
+        return redirect()->route('admin.documentation.index')->with('success', 'Documentation service updated successfully.');
     }
 
     /**
@@ -89,7 +93,7 @@ class DocumentationController extends Controller
     {
         $documentation->delete();
 
-        return redirect()->route('documentation.index')->with('success', 'Documentation service deleted successfully.');
+        return redirect()->route('admin.documentation.index')->with('success', 'Documentation service deleted successfully.');
     }
 
     /**

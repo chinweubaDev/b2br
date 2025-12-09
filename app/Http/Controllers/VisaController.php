@@ -18,6 +18,11 @@ class VisaController extends Controller
         $visas = VisaService::with('country')->where('is_active', true)->get();
         return view('visas.index', compact('visas'));
     }
+  public function adminindex()
+    {
+        $visas = VisaService::with('country')->where('is_active', true)->get();
+        return view('admin.visas.index', compact('visas'));
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -25,7 +30,7 @@ class VisaController extends Controller
     public function create()
     {
         $countries = Country::where('is_active', true)->get();
-        return view('visas.create', compact('countries'));
+        return view('admin.visas.create', compact('countries'));
     }
 
     /**
@@ -91,7 +96,7 @@ class VisaController extends Controller
     public function edit(VisaService $visa)
     {
         $countries = Country::where('is_active', true)->get();
-        return view('visas.edit', compact('visa', 'countries'));
+        return view('admin.visas.edit', compact('visa', 'countries'));
     }
 
     /**

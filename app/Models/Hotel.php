@@ -165,7 +165,12 @@ class Hotel extends Model
      */
     public function getStarRatingDisplayAttribute()
     {
-        return str_repeat('★', $this->star_rating) . str_repeat('☆', 5 - $this->star_rating);
+        // Support up to 7 stars, ensure non-negative values
+        $maxStars = 7;
+        $filledStars = min($this->star_rating, $maxStars);
+        $emptyStars = max(0, $maxStars - $filledStars);
+        
+        return str_repeat('★', $filledStars) . str_repeat('☆', $emptyStars);
     }
 
     /**

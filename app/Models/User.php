@@ -114,7 +114,7 @@ class User extends Authenticatable
     public static function getRoles()
     {
         return [
-            self::ROLE_ADMIN => 'Administrator',
+            self::ROLE_ADMIN => 'Admin',
             self::ROLE_MANAGER => 'Manager',
             self::ROLE_AGENT => 'Travel Agent',
             self::ROLE_USER => 'User',

@@ -17,13 +17,18 @@ class CruiseController extends Controller
         $cruises = Cruise::where('is_active', true)->get();
         return view('cruises.index', compact('cruises'));
     }
+ public function adminIndex()
+    {
+        $cruises = Cruise::where('is_active', true)->get();
+        return view('admin.cruises.index', compact('cruises'));
+    }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('cruises.create');
+        return view('admin.cruises.create');
     }
 
     /**
@@ -81,7 +86,7 @@ class CruiseController extends Controller
             }
         }
 
-        return redirect()->route('cruises.index')->with('success', 'Cruise created successfully.');
+        return redirect()->route('admin.cruises.index')->with('success', 'Cruise created successfully.');
     }
 
     /**
@@ -97,7 +102,7 @@ class CruiseController extends Controller
      */
     public function edit(Cruise $cruise)
     {
-        return view('cruises.edit', compact('cruise'));
+        return view('admin.cruises.edit', compact('cruise'));
     }
 
     /**
@@ -163,7 +168,7 @@ class CruiseController extends Controller
             }
         }
 
-        return redirect()->route('cruises.index')->with('success', 'Cruise updated successfully.');
+        return redirect()->route('admin.cruises.index')->with('success', 'Cruise updated successfully.');
     }
 
     /**

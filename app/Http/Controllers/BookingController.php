@@ -39,6 +39,33 @@ class BookingController extends Controller
 
         return view('bookings.index', compact('bookings'));
     }
+       public function adminIndex(Request $request)
+    {
+        $query = Booking::with('user');
+
+        // Apply filters
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('type')) {
+            $query->where('booking_type', $request->type);
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        // Get paginated results
+        $bookings = $query->latest()->paginate(15);
+
+        return view('admin.bookings.index', compact('bookings'));
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -54,7 +81,7 @@ class BookingController extends Controller
             $prefill['service_name'] = $request->service;
         }
 
-        return view('bookings.create', compact('prefill'));
+        return view('admin.bookings.create', compact('prefill'));
     }
 
     /**
@@ -114,7 +141,7 @@ class BookingController extends Controller
      */
     public function edit(Booking $booking)
     {
-        return view('bookings.edit', compact('booking'));
+        return view('admin.bookings.edit', compact('booking'));
     }
 
     /**

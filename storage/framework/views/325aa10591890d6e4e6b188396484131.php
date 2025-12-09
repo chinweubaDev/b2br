@@ -1,0 +1,1 @@
+ <?php /**PATH /home/u363422527/domains/royelimytravel.com/public_html/b2b/resources/views/admin/tours/tours/edit.blade.php ENDPATH**/ ?>

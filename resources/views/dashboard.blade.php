@@ -3,271 +3,472 @@
 @section('title', 'Dashboard - Royeli Tours & Travel')
 
 @section('content')
-<div class="space-y-6">
-    <!-- Header -->
-    <div class="bg-white rounded-lg shadow-sm p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900">Welcome to Royeli Tours & Travel</h1>
-                <p class="text-gray-600">Your comprehensive B2B travel solutions partner</p>
-            </div>
-            <div class="flex items-center space-x-4">
-                <div class="text-right">
-                    <p class="text-sm text-gray-500">Today's Date</p>
-                    <p class="text-lg font-semibold text-gray-900">{{ now()->format('F j, Y') }}</p>
+<style>
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 24px;
+        padding: 3rem 2.5rem;
+        color: white;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        animation: slideInLeft 0.6s ease-out;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.95;
+        animation: slideInRight 0.6s ease-out;
+    }
+
+    .hero-date {
+        margin-top: 1rem;
+        font-size: 0.95rem;
+        opacity: 0.9;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100px;
+        background: var(--gradient);
+        opacity: 0.05;
+        border-radius: 50%;
+        transform: translate(30%, -30%);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+    }
+
+    .stat-card.gradient-card {
+        background: var(--gradient);
+        color: white;
+    }
+
+    .stat-card.gradient-card::before {
+        background: white;
+        opacity: 0.1;
+    }
+
+    .stat-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        margin-right: 1rem;
+    }
+
+    .stat-info h3 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        opacity: 0.8;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-info p {
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .stat-footer {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .gradient-card .stat-footer {
+        border-top-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-footer a {
+        color: inherit;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .stat-footer a:hover {
+        transform: translateX(5px);
+    }
+
+    .stat-footer a i {
+        margin-left: 0.5rem;
+    }
+
+    /* Service Cards Grid */
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .service-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--color);
+    }
+
+    .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .service-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+    }
+
+    .service-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        background: var(--color);
+    }
+
+    .service-count {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--color-gray-900);
+    }
+
+    .service-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--color-gray-700);
+        margin-bottom: 1rem;
+    }
+
+    .service-link {
+        display: inline-flex;
+        align-items: center;
+        color: var(--color);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .service-link:hover {
+        transform: translateX(5px);
+    }
+
+    .service-link i {
+        margin-left: 0.5rem;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+    }
+
+    .quick-actions h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--color-gray-900);
+    }
+
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .action-btn {
+        display: flex;
+        align-items: center;
+        padding: 1.25rem;
+        background: var(--bg-gradient-light);
+        border-radius: 16px;
+        text-decoration: none;
+        color: var(--color-gray-900);
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        border-color: var(--color-primary);
+    }
+
+    .action-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        background: var(--gradient);
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+
+    .action-text h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .action-text p {
+        font-size: 0.85rem;
+        color: var(--color-gray-600);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 2rem 1.5rem;
+        }
+
+        .hero-title {
+            font-size: 1.5rem;
+        }
+
+        .stats-grid,
+        .services-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .actions-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome to Royeli Tours & Travel</h1>
+            <p class="hero-subtitle">Your comprehensive B2B travel solutions partner</p>
+            <p class="hero-date"><i class="fas fa-calendar-alt"></i> {{ now()->format('l, F j, Y') }}</p>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <!-- Wallet Balance -->
+        <div class="stat-card gradient-card" style="--gradient: linear-gradient(135deg, #0281b8 0%, #0a4d6e 100%);">
+            <div class="stat-header">
+                <div class="stat-icon" style="background: rgba(255, 255, 255, 0.2);">
+                    <i class="fas fa-wallet"></i>
                 </div>
+                <div class="stat-info">
+                    <h3>Wallet Balance</h3>
+                    <p>{{ ($user ?? auth()->user())->formatted_wallet_balance ?? '₦0.00' }}</p>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <a href="{{ route('wallet.fund') }}">
+                    <i class="fas fa-plus"></i> Fund Wallet <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Points Balance -->
+        <div class="stat-card gradient-card" style="--gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+            <div class="stat-header">
+                <div class="stat-icon" style="background: rgba(255, 255, 255, 0.2);">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Points Balance</h3>
+                    <p>{{ ($user ?? auth()->user())->points_balance ?? 0 }}</p>
+                </div>
+            </div>
+            <div class="stat-footer">
+                <span style="font-size: 0.85rem; opacity: 0.9;">Earn 100 points per transaction</span>
             </div>
         </div>
     </div>
-    <div class="row">
-                        <div class="col-md-12 ">
-                            <div class="row">
-                                <div class="col-md-4">
-                             <!-- Wallet Balance -->
-                             <div class="bg-dad=rk rounded-lg shadow-sm p-6 border-l-4 border-blue-500" style="background:#000">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-wallet text-green-600"></i>
-                        </div>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-sm font-medium text-gray-500">Wallet Balance</p>
-                        <p class="text-2xl font-bold text-blue-600">{{ ($user ?? auth()->user())->formatted_wallet_balance ?? '₦0.00' }}</p>
-                    </div>
-                </div>
-                <div>
-                    <a href="{{ route('wallet.fund') }}" class="inline-flex items-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-green-700 text-xs font-semibold">
-                        <i class="fas fa-plus mr-1"></i> Fund Wallet
-                    </a>
-                </div>
-            </div>
-            <div class="mt-4">
-                <span class="text-white-600 text-sm font-medium">Use wallet for quick payments</span>
-            </div>
-        </div>
 
-                                </div>
-      <div class="col-md-4">
- <!-- Points Balance -->
- <div class="bg-whitde rounded-lg shadow-sm p-6 mt3 border-l-4 border-yellow-400" style='background:#570d7a'>
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-white-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-star text-yellow-500"></i>
-                    </div>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500">Points Balance</p>
-                    <p class="text-2xl font-bold text-yellow-600">{{ ($user ?? auth()->user())->points_balance ?? 0 }}</p>
-                </div>
-            </div>
-            <div class="mt-4">
-                <span class="text-white-600 text-sm font-medium">Earn 100 points per successful transaction</span>
-            </div>
-        </div>
-      </div>
-           
-                               
-                            </div> <!--end row--> 
-                        </div> <!--end col--> 
-                                  
-                    </div>
-    <!-- Statistics Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6">
-      
-
-       
+    <!-- Services Grid -->
+    <div class="services-grid">
         <!-- Visa Services -->
-        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-passport text-blue-600"></i>
-                    </div>
+        <div class="service-card" style="--color: #667eea;">
+            <div class="service-header">
+                <div class="service-icon">
+                    <i class="fas fa-passport"></i>
                 </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500">Visa Services</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $visaCount ?? 15 }}</p>
-                </div>
+                <div class="service-count">{{ $visaCount ?? 15 }}</div>
             </div>
-            <div class="mt-4">
-                <a href="{{ route('visas.index') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                    View all services →
-                </a>
-            </div>
+            <h3 class="service-title">Visa Services</h3>
+            <a href="{{ route('visas.index') }}" class="service-link">
+                View all services <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
 
         <!-- Tour Packages -->
-        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-map-marked-alt text-green-600"></i>
-                    </div>
+        <div class="service-card" style="--color: #4facfe;">
+            <div class="service-header">
+                <div class="service-icon">
+                    <i class="fas fa-map-marked-alt"></i>
                 </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500">Tour Packages</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $tourCount ?? 8 }}</p>
-                </div>
+                <div class="service-count">{{ $tourCount ?? 8 }}</div>
             </div>
-            <div class="mt-4">
-                <a href="{{ route('tours.index') }}" class="text-green-600 hover:text-green-800 text-sm font-medium">
-                    View all packages →
-                </a>
-            </div>
+            <h3 class="service-title">Tour Packages</h3>
+            <a href="{{ route('tours.index') }}" class="service-link">
+                View all packages <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
 
         <!-- Hotels -->
-        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-hotel text-purple-600"></i>
-                    </div>
+        <div class="service-card" style="--color: #f5576c;">
+            <div class="service-header">
+                <div class="service-icon">
+                    <i class="fas fa-hotel"></i>
                 </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500">Hotels</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $hotelCount ?? 25 }}</p>
-                </div>
+                <div class="service-count">{{ $hotelCount ?? 25 }}</div>
             </div>
-            <div class="mt-4">
-                <a href="{{ route('hotels.index') }}" class="text-purple-600 hover:text-purple-800 text-sm font-medium">
-                    View all hotels →
-                </a>
-            </div>
+            <h3 class="service-title">Hotels</h3>
+            <a href="{{ route('hotels.index') }}" class="service-link">
+                View all hotels <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
 
         <!-- Cruises -->
-        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-indigo-500">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-ship text-indigo-600"></i>
-                    </div>
+        <div class="service-card" style="--color: #30cfd0;">
+            <div class="service-header">
+                <div class="service-icon">
+                    <i class="fas fa-ship"></i>
                 </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500">Cruises</p>
-                    <p class="text-2xl font-bold text-gray-900">{{ $cruiseCount ?? 3 }}</p>
-                </div>
+                <div class="service-count">{{ $cruiseCount ?? 3 }}</div>
             </div>
-            <div class="mt-4">
-                <a href="{{ route('cruises.index') }}" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
-                    View all cruises →
-                </a>
-            </div>
-        </div>
-
-    
-    </div>
-
-    <!-- Featured Services -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Featured Tour Packages -->
-        <div class="bg-white rounded-lg shadow-sm p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-semibold text-gray-900">Featured Tour Packages</h2>
-                <a href="{{ route('tours.index') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                    View all →
-                </a>
-            </div>
-            <div class="space-y-4">
-                @forelse($featuredTours as $tour)
-                    <div class="border border-gray-200 rounded-lg p-4">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h3 class="font-medium text-gray-900">{{ $tour->name }}</h3>
-                                <p class="text-sm text-gray-500">{{ $tour->date_range ?? '' }} • {{ $tour->duration ?? '' }}</p>
-                                <p class="text-sm text-green-600 font-medium">₦{{ number_format($tour->b2b_rate) }} B2B Rate</p>
-                            </div>
-                            <div class="text-right">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    Featured
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="text-gray-500">No featured tours at the moment.</div>
-                @endforelse
-            </div>
-        </div>
-
-        <!-- Popular Visa Services -->
-        <div class="bg-white rounded-lg shadow-sm p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-semibold text-gray-900">Popular Visa Services</h2>
-                <a href="{{ route('visas.index') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                    View all →
-                </a>
-            </div>
-            <div class="space-y-4">
-                @forelse($popularVisas as $visa)
-                    <div class="border border-gray-200 rounded-lg p-4">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <h3 class="font-medium text-gray-900">{{ $visa->service_name ?? ($visa->country->name ?? '') }}</h3>
-                                <p class="text-sm text-gray-500">processing time: {{ $visa->processing_time }}</p>
-                                <p class="text-sm text-green-600 font-medium">₦{{ number_format($visa->b2b_rate) }} B2B Rate</p>
-                            </div>
-                            <div class="text-right">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    Popular
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="text-gray-500">No popular visa services at the moment.</div>
-                @endforelse
-            </div>
+            <h3 class="service-title">Cruises</h3>
+            <a href="{{ route('cruises.index') }}" class="service-link">
+                View all cruises <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
     </div>
 
     <!-- Quick Actions -->
-    <div class="bg-white rounded-lg shadow-sm p-6">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <a href="{{ route('visas.index') }}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                    <i class="fas fa-plus text-blue-600"></i>
+    <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="actions-grid">
+            <a href="{{ route('visas.index') }}" class="action-btn">
+                <div class="action-icon" style="--gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <i class="fas fa-plus"></i>
                 </div>
-                <div>
-                    <p class="font-medium text-gray-900">New Visa Application</p>
-                    <p class="text-sm text-gray-500">Start visa process</p>
-                </div>
-            </a>
-            <a href="{{ route('tours.index') }}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                    <i class="fas fa-plus text-green-600"></i>
-                </div>
-                <div>
-                    <p class="font-medium text-gray-900">Book Tour Package</p>
-                    <p class="text-sm text-gray-500">Reserve tour</p>
+                <div class="action-text">
+                    <h4>New Visa Application</h4>
+                    <p>Start visa process</p>
                 </div>
             </a>
-            <a href="{{ route('hotels.index') }}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
-                    <i class="fas fa-plus text-purple-600"></i>
+
+            <a href="{{ route('tours.index') }}" class="action-btn">
+                <div class="action-icon" style="--gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <i class="fas fa-plus"></i>
                 </div>
-                <div>
-                    <p class="font-medium text-gray-900">Hotel Booking</p>
-                    <p class="text-sm text-gray-500">Reserve hotel</p>
+                <div class="action-text">
+                    <h4>Book Tour Package</h4>
+                    <p>Reserve tour</p>
                 </div>
             </a>
-            <a href="{{ route('documentation.index') }}" class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
-                    <i class="fas fa-file-alt text-indigo-600"></i>
+
+            <a href="{{ route('hotels.index') }}" class="action-btn">
+                <div class="action-icon" style="--gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <i class="fas fa-plus"></i>
                 </div>
-                <div>
-                    <p class="font-medium text-gray-900">Documentation</p>
-                    <p class="text-sm text-gray-500">Get documents</p>
+                <div class="action-text">
+                    <h4>Hotel Booking</h4>
+                    <p>Reserve hotel</p>
+                </div>
+            </a>
+
+            <a href="{{ route('documentation.index') }}" class="action-btn">
+                <div class="action-icon" style="--gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="action-text">
+                    <h4>Documentation</h4>
+                    <p>Get documents</p>
                 </div>
             </a>
         </div>
     </div>
-
-  
 </div>
-@endsection 
+@endsection

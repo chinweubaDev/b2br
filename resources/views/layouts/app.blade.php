@@ -1,204 +1,475 @@
 <!DOCTYPE html>
-<html lang="en" data-startbar="light" data-bs-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Royeli Travel Portal')</title>
     
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    
-    <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link href="{{ asset('assets/css/portal.css') }}" rel="stylesheet">
-                      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-
-    <link rel="stylesheet" href="{{ asset('assets/libs/jsvectormap/css/jsvectormap.min.css') }}">
-
-     <!-- App css -->
-     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
-     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
-     <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
-    <!-- Additional CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Modern CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/user-modern.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
     <style>
-        .text-dark {
-    --bs-text-opacity: 1;
-    color: rgb(0 0 0) !important;
-}
-</style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Modern Sidebar */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #141E30 0%, #243B55 100%);
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo img {
+            width: 120px;
+            height: auto;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-logo h2 {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .sidebar-nav {
+            padding: 1.5rem 0;
+        }
+
+        .nav-section-title {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 1.5rem;
+            margin-bottom: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .nav-section-title:first-child {
+            margin-top: 0;
+        }
+
+        .nav-item {
+            margin: 0.25rem 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-link:hover::before {
+            transform: scaleY(1);
+        }
+
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        .nav-link.active::before {
+            transform: scaleY(1);
+        }
+
+        .nav-link i {
+            width: 24px;
+            font-size: 1.1rem;
+            margin-right: 0.875rem;
+        }
+
+        .nav-link .badge {
+            margin-left: auto;
+            padding: 0.25rem 0.5rem;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Wallet Card in Sidebar */
+        .sidebar-wallet {
+            margin: 1.5rem 1rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            color: white;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .wallet-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .wallet-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .wallet-btn {
+            display: block;
+            width: 100%;
+            padding: 0.625rem;
+            background: white;
+            color: #667eea;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .wallet-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Topbar */
+        .topbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--color-gray-700);
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+
+        .topbar-welcome h3 {
+            font-size: 1.25rem;
+            color: var(--color-gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .topbar-welcome p {
+            font-size: 0.9rem;
+            color: var(--color-gray-500);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .topbar-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            padding: 0.5rem 1.25rem;
+            background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
+        }
+
+        /* Page Content */
+        .page-content {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .topbar {
+                padding: 1rem;
+            }
+
+            .topbar-welcome h3 {
+                font-size: 1.1rem;
+            }
+
+            .topbar-welcome p {
+                display: none;
+            }
+
+            .page-content {
+                padding: 1rem;
+            }
+        }
+
+        /* Mobile Overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+    </style>
+    
     @stack('styles')
 </head>
-<body class="bg-gray-50" x-data="{ sidebarOpen: false }">
-    <div class="min-h-screen flex">
-        <!-- Mobile sidebar overlay -->
-        <div x-show="sidebarOpen" 
-             x-transition:enter="transition-opacity ease-linear duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition-opacity ease-linear duration-300"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             class="fixed inset-0 bg-gray-600 bg-opacity-75 z-40 lg:hidden"
-             @click="sidebarOpen = false">
-        </div>
-        <div class="startbar d-print-none">
-            <!--start brand-->
-            <div class="brand">
-                <a href="" class="logo">
-                    <span>
-                        <img src="https://royelimytravel.com/assets/web/images/logo.png" alt="logo-small" class="logo-sm">
-                    </span>
-                  
+<body>
+    <div class="app-container">
+        <!-- Sidebar Overlay for Mobile -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <img src="https://royelimytravel.com/assets/web/images/logo.png" alt="Royeli Travel">
+                    <h2>B2B Portal</h2>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Main Menu</div>
+                
+                <div class="nav-item">
+                    <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+
+                <div class="nav-section-title">Services</div>
+
+                <div class="nav-item">
+                    <a href="{{ route('tours.index') }}" class="nav-link {{ request()->routeIs('tours.*') ? 'active' : '' }}">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span>Tour Packages</span>
+                    </a>
+                </div>
+
+                <div class="nav-item">
+                    <a href="{{ route('visas.index') }}" class="nav-link {{ request()->routeIs('visas.*') ? 'active' : '' }}">
+                        <i class="fas fa-passport"></i>
+                        <span>Visa Services</span>
+                    </a>
+                </div>
+
+                <div class="nav-item">
+                    <a href="{{ route('hotels.index') }}" class="nav-link {{ request()->routeIs('hotels.*') ? 'active' : '' }}">
+                        <i class="fas fa-hotel"></i>
+                        <span>Hotels</span>
+                        <span class="badge">New</span>
+                    </a>
+                </div>
+
+                <div class="nav-item">
+                    <a href="{{ route('cruises.index') }}" class="nav-link {{ request()->routeIs('cruises.*') ? 'active' : '' }}">
+                        <i class="fas fa-ship"></i>
+                        <span>Cruises</span>
+                    </a>
+                </div>
+
+                <div class="nav-item">
+                    <a href="{{ route('documentation.index') }}" class="nav-link {{ request()->routeIs('documentation.*') ? 'active' : '' }}">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Documentation</span>
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Wallet Card -->
+            <div class="sidebar-wallet">
+                <div class="wallet-label">Wallet Balance</div>
+                <div class="wallet-amount">{{ ($user ?? auth()->user())->formatted_wallet_balance ?? '₦0.00' }}</div>
+                <a href="{{ route('wallet.fund') }}" class="wallet-btn">
+                    <i class="fas fa-plus"></i> Fund Wallet
                 </a>
             </div>
-            <div class="topbar d-print-none" style="background:#0281b8;margin-bottom:100px"> 
-        <div class="container-xxl">
-            <nav class="topbar-custom d-flex justify-content-between" id="topbar-custom">    
-        
-
-                <ul class="topbar-item list-unstyled d-inline-flex align-items-center mb-0">                        
-                    <li>
-                        <button class="nav-link mobile-menu-btn nav-icon" id="togglemenu">
-                            <i class="iconoir-menu-scale"></i>
-                        </button>
-                    </li> 
-                    <li class="mx-3 welcome-text">
-                        <h3 class="mb-0 fw-bold text-truncate">Welcome, {{ auth()->user()->name }}!</h3>
-                        <h6 class="mb-0 fw-normal text-muted text-truncate fs-14">start exploring your business.</h6> 
-                    </li>                   
-                </ul>
-                <ul class="topbar-item list-unstyled d-inline-flex align-items-center mb-0">
-                     
-                  <!--end topbar-language-->
-        
-                   
-                    <li class="nav-item">
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit" class="text-white hover:underline">Logout</button>
-    </form>
-</li>
-                   
-                </ul><!--end topbar-nav-->
-            </nav>
-            <!-- end navbar-->
-        </div>
-    </div>
-            <!--end brand-->
-            <!--start startbar-menu-->
-            <div class="startbar-menu">
-                <div class="startbar-collapse simplebar-scrollable-y" id="startbarCollapse" data-simplebar="init"><div class="simplebar-wrapper" style="margin: 0px -16px -16px;"><div class="simplebar-height-auto-observer-wrapper"><div class="simplebar-height-auto-observer"></div></div><div class="simplebar-mask"><div class="simplebar-offset" style="right: 0px; bottom: 0px;"><div class="simplebar-content-wrapper" tabindex="0" role="region" aria-label="scrollable content" style="height: 100%; overflow: hidden scroll;"><div class="simplebar-content" style="padding: 0px 16px 16px;">
-                    <div class="d-flex align-items-start flex-column w-100">
-                        <!-- Navigation -->
-                        <ul class="navbar-nav mb-auto w-100">
-                            <li class="menu-label pt-0 mt-0">
-                                <!-- <small class="label-border">
-                                    <div class="border_left hidden-xs"></div>
-                                    <div class="border_right"></div>
-                                </small> -->
-                                <span>Main Menu</span>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('dashboard') }}"  role="button" aria-expanded="false" aria-controls="sidebarDashboards">
-                                    <i class="iconoir-home-simple menu-icon"></i>
-                                    
-                                    <span>Dashboards</span>
-                                </a>
-                             
-                            </li><!--end nav-item-->
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('tours.index') }}"  role="button" aria-expanded="false" aria-controls="sidebarApplications">
-                                    <i class="iconoir-view-grid menu-icon"></i>
-                                    <span>Tour Packages</span>
-                                </a>
-                           
-                            </li><!--end nav-item-->
-                          
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('visas.index') }}" drole="button" aria-expanded="false" aria-controls="sidebarElements">
-                                    <i class="iconoir-compact-disc menu-icon"></i>
-                                    <span>Visa Services</span>
-                                </a>
-                               
-                            </li><!--end nav-item-->
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('hotels.index') }}" role="button" aria-expanded="false" aria-controls="sidebarAdvancedUI">
-                                    <i class="iconoir-peace-hand menu-icon"></i>
-                                    <span>Hotels</span><span class="badge rounded text-success bg-success-subtle ms-1">New</span>
-                                </a>
-                               
-                            </li><!--end nav-item-->
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('cruises.index') }}"  role="button" aria-expanded="false" aria-controls="sidebarForms">
-                                    <i class="iconoir-journal-page menu-icon"></i>
-                                    <span>cruises</span>
-                                </a>
-                              
-                            </li><!--end nav-item-->
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('documentation.index') }}"
-                                role="button" aria-expanded="false" aria-controls="sidebarCharts">
-                                    <i class="iconoir-candlestick-chart menu-icon"></i>
-                                    <span>Documentation</span>
-                                </a>
-                             
-                            </li><!--end nav-item-->
-                           
-                           <li class="nav-item">
-    <form method="POST" action="{{ route('logout') }}">
-        @csrf
-        <button type="submit" class="text-red-600 hover:underline">Logout</button>
-    </form>
-</li>
-                          
-                        </ul><!--end navbar-nav--->
-                        <div class="update-msg text-center" style="margin-top:150px"> 
-                            <div class="d-flex justify-content-center align-items-center thumb-lg update-icon-box  rounded-circle mx-auto">
-                                <i class="iconoir-peace-hand h3 align-self-center mb-0 text-primary"></i>
-                            </div>                   
-                            <h5 class="mt-3">Royeli Travel</h5>
-                            <p class="mb-3 text-muted">B2B Portal </p>
-                            <a href="{{ route('wallet.fund') }}" class="btn text-primary shadow-sm rounded-pill">Fund Wallet</a>
-                        </div>
-                    </div>
-                </div></div></div></div><div class="simplebar-placeholder" style="width: 270px; height: 1311px;"></div></div><div class="simplebar-track simplebar-horizontal" style="visibility: hidden;"><div class="simplebar-scrollbar" style="width: 0px; display: none;"></div></div><div class="simplebar-track simplebar-vertical" style="visibility: visible;"><div class="simplebar-scrollbar" style="height: 164px; transform: translate3d(0px, 0px, 0px); display: block;"></div></div></div><!--end startbar-collapse-->
-            </div><!--end startbar-menu-->    
-        </div>
-        <!-- Sidebar -->
-      
-          
-        
-      
+        </aside>
 
         <!-- Main Content -->
-        <div class=" content flex-1 flex flex-col lg:ml-0">
-         
-<div class="container">
-<main class="flex-1 p-4 lg:p-6" style="margin-top:100px">
+        <div class="main-content">
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="topbar-welcome">
+                        <h3>Welcome, {{ auth()->user()->name }}!</h3>
+                        <p>Start exploring your business opportunities</p>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-user">
+                        <div class="user-avatar">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        </div>
+                    </div>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="page-content">
                 @yield('content')
             </main>
-</div>
-            <!-- Page Content -->
-           
         </div>
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+            });
+        }
+
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+            });
+        }
+    </script>
     
-
-<script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-        <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
-        <script src="{{ asset('assets/js/app.js') }}"></script>
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     @stack('scripts')
 </body>
-</html> 
+</html>

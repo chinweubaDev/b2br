@@ -3,33 +3,357 @@
 @section('title', 'Tour Packages - Royeli Tours & Travel')
 
 @section('content')
-<div class="space-y-6">
-    <!-- Header -->
-    <div class="bg-white rounded-lg shadow-sm p-6">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900">Tour Packages</h1>
-                <p class="text-gray-600">Explore amazing destinations with our curated tour packages</p>
-            </div>
-            <div class="flex items-center space-x-3">
-                <a href="{{ route('tours.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
-                    <i class="fas fa-plus mr-2"></i>
-                    New Tour Package
-                </a>
-            </div>
+<style>
+    .tours-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        border-radius: 24px;
+        padding: 2.5rem 2rem;
+        color: white;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 10px 40px rgba(79, 172, 254, 0.3);
+    }
+
+    .header-content h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .header-content p {
+        font-size: 1.05rem;
+        opacity: 0.95;
+    }
+
+    .create-btn {
+        padding: 0.875rem 1.75rem;
+        background: white;
+        color: #4facfe;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .create-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .create-btn i {
+        margin-right: 0.5rem;
+    }
+
+    /* Filters */
+    .filters-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+    }
+
+    .filters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.25rem;
+    }
+
+    .filter-group label {
+        display: block;
+        font-weight: 600;
+        color: var(--color-gray-700);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .filter-input,
+    .filter-select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--color-gray-200);
+        border-radius: 12px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        outline: none;
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    /* Tours Grid */
+    .tours-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .tour-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        animation: fadeIn 0.6s ease-out;
+    }
+
+    .tour-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .tour-image {
+        height: 220px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .tour-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .tour-card:hover .tour-image img {
+        transform: scale(1.1);
+    }
+
+    .tour-image.gradient-placeholder {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .tour-image.gradient-placeholder i {
+        font-size: 3rem;
+        color: white;
+        opacity: 0.9;
+    }
+
+    .featured-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        color: white;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .featured-badge i {
+        margin-right: 0.375rem;
+    }
+
+    .tour-content {
+        padding: 1.75rem;
+    }
+
+    .tour-header {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1.25rem;
+    }
+
+    .tour-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+
+    .tour-icon i {
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .tour-info h3 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--color-gray-900);
+        margin-bottom: 0.25rem;
+    }
+
+    .tour-info p {
+        font-size: 0.9rem;
+        color: var(--color-gray-600);
+    }
+
+    .tour-details {
+        margin-bottom: 1.5rem;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.625rem 0;
+        border-bottom: 1px solid var(--color-gray-100);
+    }
+
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        font-size: 0.875rem;
+        color: var(--color-gray-600);
+    }
+
+    .detail-value {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--color-gray-900);
+    }
+
+    .detail-value.price {
+        font-size: 1.1rem;
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .tour-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    .action-btn {
+        padding: 0.875rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-view {
+        background: var(--bg-gradient-light);
+        color: var(--color-gray-900);
+        border: 2px solid var(--color-gray-200);
+    }
+
+    .btn-view:hover {
+        border-color: var(--color-primary);
+        transform: translateY(-2px);
+    }
+
+    .btn-book {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+    }
+
+    .btn-book:hover {
+        box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
+        transform: translateY(-2px);
+    }
+
+    .action-btn i {
+        margin-right: 0.5rem;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--color-gray-300);
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-state h3 {
+        font-size: 1.5rem;
+        color: var(--color-gray-700);
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: var(--color-gray-500);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 1.5rem;
+        }
+
+        .header-content h1 {
+            font-size: 1.5rem;
+        }
+
+        .tours-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .filters-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="tours-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Tour Packages</h1>
+            <p>Explore amazing destinations with our curated tour packages</p>
         </div>
+        <a href="{{ route('tours.create') }}" class="create-btn">
+            <i class="fas fa-plus"></i>
+            New Tour Package
+        </a>
     </div>
 
-    <!-- Search and Filters -->
-    <div class="bg-white rounded-lg shadow-sm p-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-                <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
-                <input type="text" id="search" placeholder="Search tours..." class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+    <!-- Filters -->
+    <div class="filters-card">
+        <div class="filters-grid">
+            <div class="filter-group">
+                <label for="search">Search</label>
+                <input type="text" id="search" class="filter-input" placeholder="Search tours...">
             </div>
-            <div>
-                <label for="destination" class="block text-sm font-medium text-gray-700 mb-1">Destination</label>
-                <select id="destination" class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+            <div class="filter-group">
+                <label for="destination">Destination</label>
+                <select id="destination" class="filter-select">
                     <option value="">All Destinations</option>
                     <option value="cape-town">Cape Town</option>
                     <option value="dubai">Dubai</option>
@@ -38,9 +362,9 @@
                     <option value="new-york">New York</option>
                 </select>
             </div>
-            <div>
-                <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                <select id="category" class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+            <div class="filter-group">
+                <label for="category">Category</label>
+                <select id="category" class="filter-select">
                     <option value="">All Categories</option>
                     <option value="luxury">Luxury</option>
                     <option value="adventure">Adventure</option>
@@ -50,9 +374,9 @@
                     <option value="beach">Beach</option>
                 </select>
             </div>
-            <div>
-                <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">Duration</label>
-                <select id="duration" class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+            <div class="filter-group">
+                <label for="duration">Duration</label>
+                <select id="duration" class="filter-select">
                     <option value="">All Durations</option>
                     <option value="1-3">1-3 Days</option>
                     <option value="4-7">4-7 Days</option>
@@ -63,115 +387,83 @@
         </div>
     </div>
 
-    <!-- Tour Packages Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Tours Grid -->
+    <div class="tours-grid">
         @forelse($tours as $tour)
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-300">
+            <div class="tour-card">
                 @if($tour->featured_image_url || $tour->image_url)
-                    <div class="h-48 bg-gray-200 overflow-hidden">
-                      <img src="{{ asset('public/storage' . $tour->featured_image ?? 'storage' . $tour->image) }}" 
-     alt="{{ $tour->name }}" 
-     class="w-full h-full object-cover">
-
-                    </div>
-                @else
-                    <div class="h-48 bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
-                        <i class="fas fa-map-marked-alt text-white text-4xl"></i>
-                    </div>
-                @endif
-                
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-map-marker-alt text-blue-600"></i>
-                            </div>
-                            <div class="ml-3">
-                                <h3 class="text-lg font-semibold text-gray-900">{{ $tour->name }}</h3>
-                                <p class="text-sm text-gray-500">{{ $tour->destination }}</p>
-                            </div>
-                        </div>
+                    <div class="tour-image">
+                        <img src="{{ asset('public/storage' . $tour->featured_image ?? 'storage' . $tour->image) }}" alt="{{ $tour->name }}">
                         @if($tour->is_featured)
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                <i class="fas fa-star mr-1"></i> Featured
-                            </span>
+                            <div class="featured-badge">
+                                <i class="fas fa-star"></i> Featured
+                            </div>
                         @endif
                     </div>
-                    
-                    <div class="space-y-3">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-500">Duration:</span>
-                            <span class="font-medium">{{ $tour->duration_days }} Days</span>
+                @else
+                    <div class="tour-image gradient-placeholder">
+                        <i class="fas fa-map-marked-alt"></i>
+                        @if($tour->is_featured)
+                            <div class="featured-badge">
+                                <i class="fas fa-star"></i> Featured
+                            </div>
+                        @endif
+                    </div>
+                @endif
+
+                <div class="tour-content">
+                    <div class="tour-header">
+                        <div class="tour-icon">
+                            <i class="fas fa-map-marker-alt"></i>
                         </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-500">Category:</span>
-                            <span class="font-medium">{{ ucfirst($tour->category) }}</span>
-                        </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-500">Standard Rate:</span>
-                            <span class="font-medium">₦{{ number_format($tour->standard_rate) }}</span>
-                        </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-500">B2B Rate:</span>
-                            <span class="font-medium text-green-600">₦{{ number_format($tour->b2b_rate) }}</span>
+                        <div class="tour-info">
+                            <h3>{{ $tour->name }}</h3>
+                            <p>{{ $tour->destination }}</p>
                         </div>
                     </div>
-                    
-                    <div class="mt-4 pt-4 border-t border-gray-200">
-                        <div class="flex space-x-2">
-                            <a href="{{ route('tours.show', $tour) }}" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-3 rounded-lg text-sm font-medium">
-                                View Details
-                            </a>
-                            
-                            @auth
-                                <a href="{{ route('payment.options', ['tour', $tour->id]) }}" class="flex-1 bg-green-600 hover:bg-green-700 text-white text-center py-2 px-3 rounded-lg text-sm font-medium">
-                                    <i class="fas fa-credit-card mr-1"></i>
-                                    Book Now
-                                </a>
-                            @else
-                                <a href="{{ route('login') }}" class="flex-1 bg-green-600 hover:bg-green-700 text-white text-center py-2 px-3 rounded-lg text-sm font-medium" title="Please log in to book this tour">
-                                    <i class="fas fa-sign-in-alt mr-1"></i>
-                                    Login to Book
-                                </a>
-                            @endauth
+
+                    <div class="tour-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Duration</span>
+                            <span class="detail-value">{{ $tour->duration_days }} Days</span>
                         </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Category</span>
+                            <span class="detail-value">{{ ucfirst($tour->category) }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Standard Rate</span>
+                            <span class="detail-value">₦{{ number_format($tour->standard_rate) }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">B2B Rate</span>
+                            <span class="detail-value price">₦{{ number_format($tour->b2b_rate) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="tour-actions">
+                        <a href="{{ route('tours.show', $tour) }}" class="action-btn btn-view">
+                            <i class="fas fa-eye"></i> View Details
+                        </a>
+                        @auth
+                            <a href="{{ route('payment.options', ['tour', $tour->id]) }}" class="action-btn btn-book">
+                                <i class="fas fa-credit-card"></i> Book Now
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}" class="action-btn btn-book" title="Please log in to book this tour">
+                                <i class="fas fa-sign-in-alt"></i> Login to Book
+                            </a>
+                        @endauth
                     </div>
                 </div>
             </div>
         @empty
-            <!-- Placeholder Cards -->
-            
+            <div class="empty-state" style="grid-column: 1 / -1;">
+                <i class="fas fa-map-marked-alt"></i>
+                <h3>No Tour Packages Found</h3>
+                <p>Check back later for exciting tour packages!</p>
+            </div>
         @endforelse
     </div>
-
-    <!-- Load More Button -->
-    <div class="text-center">
-        <button class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-medium">
-            Load More Tour Packages
-        </button>
-    </div>
 </div>
-
-@push('scripts')
-<script>
-    // Search and filter functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('search');
-        const destinationSelect = document.getElementById('destination');
-        const categorySelect = document.getElementById('category');
-        const durationSelect = document.getElementById('duration');
-        
-        // Add event listeners for filtering
-        [searchInput, destinationSelect, categorySelect, durationSelect].forEach(element => {
-            element.addEventListener('change', filterTourPackages);
-            element.addEventListener('input', filterTourPackages);
-        });
-        
-        function filterTourPackages() {
-            // Implementation for filtering tour packages
-            console.log('Filtering tour packages...');
-        }
-    });
-</script>
-@endpush
 @endsection

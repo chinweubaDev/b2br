@@ -17,15 +17,26 @@ return new class extends Migration
             $table->string('contact_person');
             $table->string('email')->unique();
             $table->string('phone');
+            $table->string('website')->nullable();
             $table->text('address');
             $table->string('city');
+            $table->string('state');
             $table->string('country');
-            $table->string('business_type'); // travel_agency, tour_operator, corporate
-            $table->string('partnership_level'); // bronze, silver, gold, platinum
+            $table->string('postal_code')->nullable();
+            $table->string('business_type'); // travel_agent, tour_operator, corporate, individual
+            $table->string('license_number')->nullable();
+            $table->string('tax_id')->nullable();
             $table->decimal('commission_rate', 5, 2)->default(0.00);
-            $table->string('logo')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->boolean('is_verified')->default(false);
+            $table->decimal('credit_limit', 15, 2)->default(0.00);
+            $table->decimal('current_balance', 15, 2)->default(0.00);
+            $table->enum('status', ['active', 'inactive', 'suspended', 'pending'])->default('pending');
+            $table->enum('payment_terms', ['immediate', '7_days', '15_days', '30_days'])->default('immediate');
+            $table->json('services_offered')->nullable();
+            $table->text('specializations')->nullable();
+            $table->text('notes')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
         });
     }

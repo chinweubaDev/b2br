@@ -33,6 +33,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
 });
 
+// Partner Authentication Routes (Separate from user and admin auth)
+Route::prefix('partner')->name('partner.')->group(function () {
+    Route::get('/login', [\App\Http\Controllers\Partner\PartnerAuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [\App\Http\Controllers\Partner\PartnerAuthController::class, 'login']);
+    Route::post('/logout', [\App\Http\Controllers\Partner\PartnerAuthController::class, 'logout'])->name('logout');
+});
+
 // Authentication routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -163,6 +170,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/partners/{partner}/dashboard', [PartnerController::class, 'dashboard'])->name('partners.dashboard');
     Route::patch('/partners/{partner}/status', [PartnerController::class, 'updateStatus'])->name('partners.status');
     Route::post('/partners/{partner}/payment', [PartnerController::class, 'processPayment'])->name('partners.payment');
+});
+
+// Partner Dashboard Routes (Partner-protected)
+Route::middleware(['partner'])->prefix('partner')->name('partner.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Partner\PartnerDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/bookings', [\App\Http\Controllers\Partner\PartnerDashboardController::class, 'bookings'])->name('bookings');
+    Route::get('/transactions', [\App\Http\Controllers\Partner\PartnerDashboardController::class, 'transactions'])->name('transactions');
+    Route::get('/profile', [\App\Http\Controllers\Partner\PartnerDashboardController::class, 'profile'])->name('profile');
+    Route::put('/profile', [\App\Http\Controllers\Partner\PartnerDashboardController::class, 'updateProfile'])->name('profile.update');
 });
 
 // Payment Routes

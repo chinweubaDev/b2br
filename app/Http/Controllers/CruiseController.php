@@ -12,10 +12,61 @@ class CruiseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $cruises = Cruise::where('is_active', true)->get();
-        return view('cruises.index', compact('cruises'));
+        $query = Cruise::where('is_active', true);
+
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('ship_name', 'like', "%{$search}%")
+                  ->orWhere('route', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // Destination/Route filter
+        if ($request->filled('destination')) {
+            $query->where('route', 'like', "%{$request->destination}%");
+        }
+
+        // Cruise line filter
+        if ($request->filled('cruise_line')) {
+            $query->where('cruise_line', 'like', "%{$request->cruise_line}%");
+        }
+
+        // Duration filter
+        if ($request->filled('duration')) {
+            $duration = $request->duration;
+            if ($duration === '1-3') {
+                $query->whereBetween('duration_nights', [1, 3]);
+            } elseif ($duration === '4-7') {
+                $query->whereBetween('duration_nights', [4, 7]);
+            } elseif ($duration === '8-14') {
+                $query->whereBetween('duration_nights', [8, 14]);
+            } elseif ($duration === '15+') {
+                $query->where('duration_nights', '>=', 15);
+            }
+        }
+
+        $cruises = $query->get();
+        
+        // Get unique routes and cruise lines for filter dropdowns
+        $routes = Cruise::where('is_active', true)
+            ->distinct()
+            ->pluck('route')
+            ->sort()
+            ->values();
+            
+        $cruiseLines = Cruise::where('is_active', true)
+            ->distinct()
+            ->pluck('cruise_line')
+            ->sort()
+            ->values();
+
+        return view('cruises.index', compact('cruises', 'routes', 'cruiseLines'));
     }
  public function adminIndex()
     {

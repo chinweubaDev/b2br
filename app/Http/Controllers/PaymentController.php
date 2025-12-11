@@ -31,9 +31,9 @@ class PaymentController extends Controller
         if (!$service) {
             return redirect()->back()->with('error', 'Service not found.');
         }
-
+ 
         $amount = $this->getServiceAmount($service, $serviceType);
-        $serviceName = $this->getServiceName($service, $serviceType) || 'jjd';
+             $serviceName = $this->getServicename($service, $serviceType) || 'jjd';
 
         return view('payments.options', compact('service', 'serviceType', 'serviceId', 'amount', 'serviceName'));
     }

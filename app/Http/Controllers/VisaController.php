@@ -13,10 +13,64 @@ class VisaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $visas = VisaService::with('country')->where('is_active', true)->get();
-        return view('visas.index', compact('visas'));
+        $query = VisaService::with('country')->where('is_active', true);
+
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('service_name', 'like', "%{$search}%")
+                  ->orWhere('visa_type', 'like', "%{$search}%")
+                  ->orWhereHas('country', function($countryQuery) use ($search) {
+                      $countryQuery->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Country filter
+        if ($request->filled('country')) {
+            $query->whereHas('country', function($countryQuery) use ($request) {
+                $countryQuery->where('name', 'like', "%{$request->country}%");
+            });
+        }
+
+        // Visa type filter
+        if ($request->filled('type')) {
+            $query->where('visa_type', 'like', "%{$request->type}%");
+        }
+
+        // Processing time filter
+        if ($request->filled('processing')) {
+            $processing = $request->processing;
+            if ($processing === 'express') {
+                $query->where('processing_time', 'like', '%day%');
+            } elseif ($processing === 'standard') {
+                $query->where('processing_time', 'like', '%week%');
+            } elseif ($processing === 'extended') {
+                $query->where('processing_time', 'like', '%month%');
+            }
+        }
+
+        $visas = $query->get();
+        
+        // Get unique countries and visa types for filter dropdowns
+        $countries = VisaService::with('country')
+            ->where('is_active', true)
+            ->get()
+            ->pluck('country.name')
+            ->unique()
+            ->sort()
+            ->values();
+            
+        $visaTypes = VisaService::where('is_active', true)
+            ->distinct()
+            ->pluck('visa_type')
+            ->sort()
+            ->values();
+
+        return view('visas.index', compact('visas', 'countries', 'visaTypes'));
     }
   public function adminindex()
     {
@@ -79,7 +133,7 @@ class VisaController extends Controller
             }
         }
 
-        return redirect()->route('visas.index')->with('success', 'Visa service created successfully.');
+        return redirect()->route('admin.visas.index')->with('success', 'Visa service created successfully.');
     }
 
     /**
@@ -148,8 +202,7 @@ class VisaController extends Controller
                 }
             }
         }
-
-        return redirect()->route('visas.index')->with('success', 'Visa service updated successfully.');
+        return redirect()->route('admin.visas.index')->with('success', 'Visa service updated successfully.');
     }
 
     /**

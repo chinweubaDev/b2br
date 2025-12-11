@@ -12,10 +12,60 @@ class TourController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tours = TourPackage::where('is_active', true)->get();
-        return view('tours.index', compact('tours'));
+        $query = TourPackage::where('is_active', true);
+
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('destination', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // Destination filter
+        if ($request->filled('destination')) {
+            $query->where('destination', 'like', "%{$request->destination}%");
+        }
+
+        // Category filter
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+
+        // Duration filter
+        if ($request->filled('duration')) {
+            $duration = $request->duration;
+            if ($duration === '1-3') {
+                $query->whereBetween('duration_days', [1, 3]);
+            } elseif ($duration === '4-7') {
+                $query->whereBetween('duration_days', [4, 7]);
+            } elseif ($duration === '8-14') {
+                $query->whereBetween('duration_days', [8, 14]);
+            } elseif ($duration === '15+') {
+                $query->where('duration_days', '>=', 15);
+            }
+        }
+
+        $tours = $query->get();
+        
+        // Get unique destinations and categories for filter dropdowns
+        $destinations = TourPackage::where('is_active', true)
+            ->distinct()
+            ->pluck('destination')
+            ->sort()
+            ->values();
+            
+        $categories = TourPackage::where('is_active', true)
+            ->distinct()
+            ->pluck('category')
+            ->sort()
+            ->values();
+
+        return view('tours.index', compact('tours', 'destinations', 'categories'));
     }
 
      public function adminLink()

@@ -11,12 +11,7 @@
                 <h1 class="text-2xl font-bold text-gray-900">Cruise Packages</h1>
                 <p class="text-gray-600">Discover luxury cruise experiences to exotic destinations</p>
             </div>
-            <div class="flex items-center space-x-3">
-                <a href="{{ route('cruises.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
-                    <i class="fas fa-plus mr-2"></i>
-                    New Cruise Package
-                </a>
-            </div>
+           
         </div>
     </div>
 
@@ -25,43 +20,38 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
-                <input type="text" id="search" placeholder="Search cruise packages..." class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                <input type="text" id="search" placeholder="Search cruise packages..." class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" value="{{ request('search') }}">
             </div>
             <div>
                 <label for="destination" class="block text-sm font-medium text-gray-700 mb-1">Destination</label>
                 <select id="destination" class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     <option value="">All Destinations</option>
-                    <option value="caribbean">Caribbean</option>
-                    <option value="mediterranean">Mediterranean</option>
-                    <option value="alaska">Alaska</option>
-                    <option value="europe">Europe</option>
-                    <option value="asia">Asia</option>
-                    <option value="australia">Australia</option>
-                    <option value="hawaii">Hawaii</option>
-                    <option value="mexico">Mexico</option>
+                    @foreach($routes as $route)
+                        <option value="{{ $route }}" {{ request('destination') == $route ? 'selected' : '' }}>
+                            {{ $route }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
             <div>
                 <label for="cruise_line" class="block text-sm font-medium text-gray-700 mb-1">Cruise Line</label>
                 <select id="cruise_line" class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     <option value="">All Cruise Lines</option>
-                    <option value="royal-caribbean">Royal Caribbean</option>
-                    <option value="carnival">Carnival</option>
-                    <option value="norwegian">Norwegian</option>
-                    <option value="celebrity">Celebrity</option>
-                    <option value="princess">Princess</option>
-                    <option value="disney">Disney</option>
-                    <option value="holland-america">Holland America</option>
+                    @foreach($cruiseLines as $cruiseLine)
+                        <option value="{{ $cruiseLine }}" {{ request('cruise_line') == $cruiseLine ? 'selected' : '' }}>
+                            {{ $cruiseLine }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
             <div>
                 <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">Duration</label>
                 <select id="duration" class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     <option value="">All Durations</option>
-                    <option value="1-3">1-3 Days</option>
-                    <option value="4-7">4-7 Days</option>
-                    <option value="8-14">8-14 Days</option>
-                    <option value="15+">15+ Days</option>
+                    <option value="1-3" {{ request('duration') == '1-3' ? 'selected' : '' }}>1-3 Days</option>
+                    <option value="4-7" {{ request('duration') == '4-7' ? 'selected' : '' }}>4-7 Days</option>
+                    <option value="8-14" {{ request('duration') == '8-14' ? 'selected' : '' }}>8-14 Days</option>
+                    <option value="15+" {{ request('duration') == '15+' ? 'selected' : '' }}>15+ Days</option>
                 </select>
             </div>
         </div>
@@ -305,23 +295,50 @@
 
 @push('scripts')
 <script>
-    // Search and filter functionality
+    // Cruise filtering functionality
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('search');
         const destinationSelect = document.getElementById('destination');
         const cruiseLineSelect = document.getElementById('cruise_line');
         const durationSelect = document.getElementById('duration');
-        
-        // Add event listeners for filtering
-        [searchInput, destinationSelect, cruiseLineSelect, durationSelect].forEach(element => {
-            element.addEventListener('change', filterCruisePackages);
-            element.addEventListener('input', filterCruisePackages);
-        });
-        
-        function filterCruisePackages() {
-            // Implementation for filtering cruise packages
-            console.log('Filtering cruise packages...');
+
+        // Debounce function for search input
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
+
+        // Apply filters function
+        function applyFilters() {
+            const params = new URLSearchParams();
+            
+            const searchValue = searchInput.value.trim();
+            const destinationValue = destinationSelect.value;
+            const cruiseLineValue = cruiseLineSelect.value;
+            const durationValue = durationSelect.value;
+
+            if (searchValue) params.append('search', searchValue);
+            if (destinationValue) params.append('destination', destinationValue);
+            if (cruiseLineValue) params.append('cruise_line', cruiseLineValue);
+            if (durationValue) params.append('duration', durationValue);
+
+            // Reload page with filters
+            const queryString = params.toString();
+            window.location.href = queryString ? `{{ route('cruises.index') }}?${queryString}` : '{{ route('cruises.index') }}';
+        }
+
+        // Add event listeners
+        searchInput.addEventListener('input', debounce(applyFilters, 500));
+        destinationSelect.addEventListener('change', applyFilters);
+        cruiseLineSelect.addEventListener('change', applyFilters);
+        durationSelect.addEventListener('change', applyFilters);
     });
 </script>
 @endpush

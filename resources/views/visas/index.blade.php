@@ -12,10 +12,7 @@
                 <p class="text-gray-600">Comprehensive visa processing services for destinations worldwide</p>
             </div>
             <div class="flex items-center space-x-3">
-                <a href="{{ route('admin.visas.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
-                    <i class="fas fa-plus mr-2"></i>
-                    New Visa Service
-                </a>
+               
             </div>
         </div>
     </div>
@@ -25,46 +22,37 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
-                <input type="text" id="search" placeholder="Search visa services..." class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                <input type="text" id="search" placeholder="Search visa services..." class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" value="{{ request('search') }}">
             </div>
             <div>
                 <label for="country" class="block text-sm font-medium text-gray-700 mb-1">Country</label>
                 <select id="country" class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     <option value="">All Countries</option>
-                    <option value="canada">Canada</option>
-                    <option value="egypt">Egypt</option>
-                    <option value="france">France</option>
-                    <option value="italy">Italy</option>
-                    <option value="kenya">Kenya</option>
-                    <option value="morocco">Morocco</option>
-                    <option value="qatar">Qatar</option>
-                    <option value="south-africa">South Africa</option>
-                    <option value="tanzania">Tanzania</option>
-                    <option value="thailand">Thailand</option>
-                    <option value="turkey">Turkey</option>
-                    <option value="uk">United Kingdom</option>
-                    <option value="usa">United States</option>
-                    <option value="vietnam">Vietnam</option>
-                    <option value="zambia">Zambia</option>
+                    @foreach($countries as $country)
+                        <option value="{{ $country }}" {{ request('country') == $country ? 'selected' : '' }}>
+                            {{ $country }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
             <div>
                 <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Visa Type</label>
                 <select id="type" class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     <option value="">All Types</option>
-                    <option value="tourist">Tourist</option>
-                    <option value="business">Business</option>
-                    <option value="student">Student</option>
-                    <option value="work">Work</option>
+                    @foreach($visaTypes as $visaType)
+                        <option value="{{ $visaType }}" {{ request('type') == $visaType ? 'selected' : '' }}>
+                            {{ ucfirst($visaType) }}
+                        </option>
+                    @endforeach
                 </select>
             </div>
             <div>
                 <label for="processing" class="block text-sm font-medium text-gray-700 mb-1">Processing Time</label>
                 <select id="processing" class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     <option value="">All Times</option>
-                    <option value="express">Express (1-7 days)</option>
-                    <option value="standard">Standard (1-4 weeks)</option>
-                    <option value="extended">Extended (1-6 months)</option>
+                    <option value="express" {{ request('processing') == 'express' ? 'selected' : '' }}>Express (1-7 days)</option>
+                    <option value="standard" {{ request('processing') == 'standard' ? 'selected' : '' }}>Standard (1-4 weeks)</option>
+                    <option value="extended" {{ request('processing') == 'extended' ? 'selected' : '' }}>Extended (1-6 months)</option>
                 </select>
             </div>
         </div>
@@ -144,10 +132,7 @@
                 </div>
                 <h3 class="text-lg font-medium text-gray-900 mb-2">No Visa Services Available</h3>
                 <p class="text-gray-500 mb-4">There are currently no visa services available. Please check back later or contact us for assistance.</p>
-                <a href="{{ route('visas.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    <i class="fas fa-plus mr-2"></i>
-                    Add Visa Service
-                </a>
+               
             </div>
         </div>
         @endforelse
@@ -163,23 +148,50 @@
 
 @push('scripts')
 <script>
-    // Search and filter functionality
+    // Visa filtering functionality
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('search');
         const countrySelect = document.getElementById('country');
         const typeSelect = document.getElementById('type');
         const processingSelect = document.getElementById('processing');
-        
-        // Add event listeners for filtering
-        [searchInput, countrySelect, typeSelect, processingSelect].forEach(element => {
-            element.addEventListener('change', filterVisaServices);
-            element.addEventListener('input', filterVisaServices);
-        });
-        
-        function filterVisaServices() {
-            // Implementation for filtering visa services
-            console.log('Filtering visa services...');
+
+        // Debounce function for search input
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
+
+        // Apply filters function
+        function applyFilters() {
+            const params = new URLSearchParams();
+            
+            const searchValue = searchInput.value.trim();
+            const countryValue = countrySelect.value;
+            const typeValue = typeSelect.value;
+            const processingValue = processingSelect.value;
+
+            if (searchValue) params.append('search', searchValue);
+            if (countryValue) params.append('country', countryValue);
+            if (typeValue) params.append('type', typeValue);
+            if (processingValue) params.append('processing', processingValue);
+
+            // Reload page with filters
+            const queryString = params.toString();
+            window.location.href = queryString ? `{{ route('visas.index') }}?${queryString}` : '{{ route('visas.index') }}';
+        }
+
+        // Add event listeners
+        searchInput.addEventListener('input', debounce(applyFilters, 500));
+        countrySelect.addEventListener('change', applyFilters);
+        typeSelect.addEventListener('change', applyFilters);
+        processingSelect.addEventListener('change', applyFilters);
     });
 </script>
 @endpush

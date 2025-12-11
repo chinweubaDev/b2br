@@ -11,12 +11,7 @@
                 <h1 class="text-2xl font-bold text-gray-900">Documentation Services</h1>
                 <p class="text-gray-600">Assistance with supporting documents for applicants and travelers</p>
             </div>
-            <div class="flex items-center space-x-3">
-                <a href="{{ route('documentation.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center">
-                    <i class="fas fa-plus mr-2"></i>
-                    New Service
-                </a>
-            </div>
+           
         </div>
     </div>
 
